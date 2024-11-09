@@ -1,0 +1,41 @@
+Генерация ключей для удаленного доступа по протоколу ssh
+Для подтверждения подлинности при установлении сеанса связи по протоколу ssh нужно сгенерировать пару ssh-ключей
+Команда для генерации:
+ssh-keygen -t <алгоритм шифрования> -C <комментарий>
+ssh-keygen -t ed25519 -C "skyzoo.van@gmail.com"
+
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/tmp/.ssh/id_ed25519):     
+Created directory '/home/tmp/.ssh'.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/tmp/.ssh/id_ed25519
+Your public key has been saved in /home/tmp/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:baEiTvD6TunVG/TnpCkTpB9eureKcu/c76lI4Dy/lvA skyzoo.van@gmail.com
+The key's randomart image is:
++--[ED25519 256]--+
+|                 |
+|                 |
+|  .       .      |
+|   o    .o .     |
+|    + ooS o      |
+|   + =o=oo.      |
+|  . + ==+*. o    |
+|   +...*E=.* .   |
+|   .+o.+@B*==    |
++----[SHA256]-----+
+
+Рекомендуется применять парольную фразу - "test"
+Наличие парольной фразы защищает использование секретного ключа в случае его похищения
+
+После генерации пары ключей необходимо установить публичный ключ на удаленный компьютер
+tmp@alexander-VirtualBox:~/.ssh$ ssh-copy-id -i id_ed25519.pub pobedinskiivs@172.16.7.85
+
+После установки публичного ключа можно добавить секретный в ssh-агент:
+
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_ed25519
+
+Теперь можно открывать сеанс связи с удаленным компьютером без использования пароля, даже с заблокированной для обычного входа учетной записью
+ssh pobedinskiivs@172.16.7.85
